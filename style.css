@@ -1,157 +1,157 @@
 /* Estilo global */
 body {
-    font-family: Arial, sans-serif;
-    margin: 0;
-    padding: 0;
-    background-color: #f4f4f4; /* Cor de fundo cinza claro */
+    font-family: Arial, sans-serif; /* Define a fonte da página */
+    margin: 0; /* Remove a margem padrão */
+    padding: 0; /* Remove o padding padrão */
+    background-color: #f4f4f4; /* Define a cor de fundo da página */
 }
 
 /* Estilo do cabeçalho */
 header {
-    background-color: #000; /* Preto */
-    color: #fff; /* Branco */
-    padding: 15px;
-    text-align: center;
+    background-color: #000; /* Cor de fundo preta */
+    color: #fff; /* Cor do texto branca */
+    padding: 15px; /* Espaçamento interno */
+    text-align: center; /* Alinha o texto ao centro */
 }
 
 header h1 {
-    margin: 0;
-    font-size: 24px;
+    margin: 0; /* Remove a margem padrão */
+    font-size: 24px; /* Define o tamanho da fonte */
 }
 
 /* Estilo do conteúdo principal */
 main {
-    padding: 20px;
+    padding: 20px; /* Espaçamento interno */
 }
 
 /* Estilo da seção */
 section {
-    max-width: 1200px;
-    margin: auto;
+    max-width: 1200px; /* Define a largura máxima da seção */
+    margin: auto; /* Centraliza a seção horizontalmente */
 }
 
 /* Estilo do input de arquivo */
 input[type="file"] {
-    margin-bottom: 20px;
-    padding: 10px;
-    border: 1px solid #ccc; /* Cinza claro */
-    border-radius: 4px;
+    margin-bottom: 20px; /* Espaçamento abaixo do input */
+    padding: 10px; /* Espaçamento interno */
+    border: 1px solid #ccc; /* Borda cinza clara */
+    border-radius: 4px; /* Bordas arredondadas */
 }
 
 /* Estilo do container de pedidos */
 .container-pedidos {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 15px;
+    display: flex; /* Exibe os itens em flexbox */
+    flex-wrap: wrap; /* Permite que os itens quebrem a linha */
+    gap: 15px; /* Espaçamento entre os itens */
 }
 
 /* Estilo dos botões de pedidos */
 .pedido-btn {
-    background-color: #333; /* Cinza escuro */
-    color: #fff; /* Branco */
-    border: none;
-    padding: 15px 25px;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 16px;
-    text-align: center;
-    width: 150px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
-    transition: background-color 0.3s, transform 0.3s;
+    background-color: #333; /* Cor de fundo cinza escuro */
+    color: #fff; /* Cor do texto branca */
+    border: none; /* Remove a borda padrão */
+    padding: 15px 25px; /* Espaçamento interno */
+    border-radius: 5px; /* Bordas arredondadas */
+    cursor: pointer; /* Muda o cursor para pointer */
+    font-size: 16px; /* Define o tamanho da fonte */
+    text-align: center; /* Alinha o texto ao centro */
+    width: 150px; /* Define a largura do botão */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2); /* Sombra do botão */
+    transition: background-color 0.3s, transform 0.3s; /* Transição suave para as mudanças de cor e escala */
 }
 
 .pedido-btn:hover {
-    background-color: #000; /* Preto */
-    transform: scale(1.05);
+    background-color: #000; /* Muda a cor de fundo para preto ao passar o mouse */
+    transform: scale(1.05); /* Aumenta levemente o tamanho do botão */
 }
 
 /* Estilo do popup */
 .popup {
-    display: none;
-    position: fixed;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.6);
-    justify-content: center;
-    align-items: center;
+    display: none; /* Oculta o popup por padrão */
+    position: fixed; /* Posiciona o popup fixo na tela */
+    left: 0; /* Alinha à esquerda */
+    top: 0; /* Alinha ao topo */
+    width: 100%; /* Largura total da tela */
+    height: 100%; /* Altura total da tela */
+    background-color: rgba(0, 0, 0, 0.6); /* Fundo escuro com transparência */
+    justify-content: center; /* Centraliza o conteúdo horizontalmente */
+    align-items: center; /* Centraliza o conteúdo verticalmente */
 }
 
 .popup-content {
-    background-color: #fff; /* Branco */
-    padding: 20px;
-    border-radius: 8px;
-    width: 80%;
-    max-width: 600px;
-    position: relative;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+    background-color: #fff; /* Cor de fundo branca */
+    padding: 20px; /* Espaçamento interno */
+    border-radius: 8px; /* Bordas arredondadas */
+    width: 80%; /* Largura do popup */
+    max-width: 600px; /* Largura máxima do popup */
+    position: relative; /* Permite o posicionamento do botão de fechar */
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2); /* Sombra do popup */
 }
 
 .popup-close {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    cursor: pointer;
-    font-size: 24px;
-    color: #333; /* Cinza escuro */
+    position: absolute; /* Posiciona o botão de fechar absolutamente */
+    top: 10px; /* Alinha ao topo */
+    right: 10px; /* Alinha à direita */
+    cursor: pointer; /* Muda o cursor para pointer */
+    font-size: 24px; /* Tamanho da fonte */
+    color: #333; /* Cor do texto cinza escuro */
 }
 
 .popup-close:hover {
-    color: #000; /* Preto */
+    color: #000; /* Muda a cor do texto para preto ao passar o mouse */
 }
 
 /* Estilo para checklists e botões */
 form div {
-    margin-bottom: 10px;
+    margin-bottom: 10px; /* Espaçamento abaixo dos elementos do formulário */
 }
 
 input[type="checkbox"] {
-    margin-right: 10px;
+    margin-right: 10px; /* Espaçamento à direita dos checkboxes */
 }
 
 button {
-    background-color: #333; /* Cinza escuro */
-    color: #fff; /* Branco */
-    border: none;
-    padding: 10px 20px;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 16px;
+    background-color: #333; /* Cor de fundo cinza escuro */
+    color: #fff; /* Cor do texto branca */
+    border: none; /* Remove a borda padrão */
+    padding: 10px 20px; /* Espaçamento interno */
+    border-radius: 5px; /* Bordas arredondadas */
+    cursor: pointer; /* Muda o cursor para pointer */
+    font-size: 16px; /* Define o tamanho da fonte */
 }
 
 button:hover {
-    background-color: #000; /* Preto */
+    background-color: #000; /* Muda a cor de fundo para preto ao passar o mouse */
 }
 
 /* Estilo para os containers de modelos */
 .modelo-container {
-    background-color: #f9f9f9;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    padding: 10px;
-    margin-bottom: 10px;
-    display: flex;
-    align-items: center;
+    background-color: #f9f9f9; /* Cor de fundo cinza muito claro */
+    border: 1px solid #ccc; /* Borda cinza clara */
+    border-radius: 5px; /* Bordas arredondadas */
+    padding: 10px; /* Espaçamento interno */
+    margin-bottom: 10px; /* Espaçamento abaixo dos containers */
+    display: flex; /* Exibe os itens em flexbox */
+    align-items: center; /* Alinha verticalmente os itens ao centro */
 }
 
 .modelo-container input[type="checkbox"] {
-    margin-right: 10px;
+    margin-right: 10px; /* Espaçamento à direita dos checkboxes */
 }
 
 .modelo-container label {
-    flex-grow: 1;
-    font-size: 14px;
+    flex-grow: 1; /* Permite que o label ocupe o espaço restante */
+    font-size: 14px; /* Define o tamanho da fonte */
 }
 
 /* Estilo para riscar texto */
 .riscado {
-    text-decoration: line-through;
-    color: #999; /* Cinza claro para o texto riscado */
+    text-decoration: line-through; /* Risca o texto */
+    color: #999; /* Cor do texto cinza claro */
 }
 
 /* Estilo para o botão quando o pedido é salvo */
 .pedido-salvo {
-    background-color: #4CAF50; /* Verde */
-    color: white; /* Texto branco */
+    background-color: #4CAF50; /* Cor de fundo verde */
+    color: white; /* Cor do texto branca */
 }
