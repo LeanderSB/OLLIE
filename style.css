@@ -1,138 +1,117 @@
-/* Estilos gerais do corpo da página */
+/* Estilo global */
 body {
-    font-family: Arial, sans-serif; /* Define a fonte padrão */
-    margin: 0; /* Remove margens padrão */
-    padding: 0; /* Remove padding padrão */
-    background-color: #f4f4f4; /* Define a cor de fundo */
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f4; /* Cor de fundo cinza claro */
 }
 
-/* Estilos para o título principal */
-h1 {
-    text-align: center; /* Centraliza o texto */
-    color: #333; /* Define a cor do texto */
-    margin-top: 20px; /* Adiciona margem no topo */
+/* Estilo do cabeçalho */
+header {
+    background-color: #000; /* Preto */
+    color: #fff; /* Branco */
+    padding: 15px;
+    text-align: center;
 }
 
-/* Estilos para o subtítulo */
-h2 {
-    text-align: center; /* Centraliza o texto */
-    color: #666; /* Define uma cor de texto mais clara */
+header h1 {
+    margin: 0;
+    font-size: 24px;
 }
 
-/* Estilos para o input de arquivo */
+/* Estilo do conteúdo principal */
+main {
+    padding: 20px;
+}
+
+/* Estilo da seção */
+section {
+    max-width: 1200px;
+    margin: auto;
+}
+
+/* Estilo do input de arquivo */
 input[type="file"] {
-    display: block; /* Exibe o input como um bloco */
-    margin: 20px auto; /* Centraliza horizontalmente e adiciona margem vertical */
-    padding: 10px; /* Adiciona padding interno */
-    font-size: 16px; /* Define o tamanho da fonte */
+    margin-bottom: 20px;
+    padding: 10px;
+    border: 1px solid #ccc; /* Cinza claro */
+    border-radius: 4px;
 }
 
-/* Estilos para o container da tabela de pedidos */
-#tabela-pedidos {
-    display: flex; /* Exibe o container como um flex container */
-    justify-content: center; /* Centraliza o conteúdo horizontalmente */
-    margin-top: 20px; /* Adiciona margem no topo */
+/* Estilo do container de pedidos */
+.container-pedidos {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
 }
 
-/* Estilos gerais para tabelas */
-table {
-    width: 100%; /* Define a largura da tabela como 100% do container */
-    max-width: 800px; /* Define uma largura máxima */
-    border-collapse: collapse; /* Remove espaçamento entre bordas */
-    background: #fff; /* Define a cor de fundo da tabela */
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Adiciona sombra à tabela */
+/* Estilo dos botões de pedidos */
+.pedido-btn {
+    background-color: #333; /* Cinza escuro */
+    color: #fff; /* Branco */
+    border: none;
+    padding: 15px 25px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    text-align: center;
+    width: 150px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+    transition: background-color 0.3s, transform 0.3s;
 }
 
-/* Estilos para cabeçalhos e células das tabelas */
-th, td {
-    border: 1px solid #ddd; /* Define borda para cabeçalhos e células */
-    padding: 12px; /* Adiciona padding interno */
-    text-align: left; /* Alinha o texto à esquerda */
+.pedido-btn:hover {
+    background-color: #000; /* Preto */
+    transform: scale(1.05);
 }
 
-/* Estilos para cabeçalhos da tabela */
-th {
-    background-color: #f4f4f4; /* Define uma cor de fundo clara */
-    color: #333; /* Define a cor do texto */
-}
-
-/* Estilos para linhas pares da tabela */
-tr:nth-child(even) {
-    background-color: #f9f9f9; /* Define uma cor de fundo alternada */
-}
-
-/* Estilos para linhas ao passar o mouse */
-tr:hover {
-    background-color: #f1f1f1; /* Adiciona destaque ao passar o mouse */
-}
-
-/* Estilos para o popup */
+/* Estilo do popup */
 .popup {
-    display: none; /* Inicialmente oculto */
-    position: fixed; /* Fixa a posição na tela */
-    left: 0; /* Alinha à esquerda */
-    top: 0; /* Alinha ao topo */
-    width: 100%; /* Define a largura como 100% da tela */
-    height: 100%; /* Define a altura como 100% da tela */
-    background: rgba(0, 0, 0, 0.6); /* Define um fundo semi-transparente */
-    justify-content: center; /* Centraliza o conteúdo horizontalmente */
-    align-items: center; /* Centraliza o conteúdo verticalmente */
-    z-index: 1000; /* Define a ordem de empilhamento */
+    display: none;
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.6);
+    justify-content: center;
+    align-items: center;
 }
 
-/* Estilos para o conteúdo do popup */
 .popup-content {
-    background: #fff; /* Define a cor de fundo */
-    padding: 20px; /* Adiciona padding interno */
-    border-radius: 5px; /* Adiciona bordas arredondadas */
-    max-width: 90%; /* Define uma largura máxima */
-    max-height: 80%; /* Define uma altura máxima */
-    overflow-y: auto; /* Adiciona rolagem vertical se necessário */
-    position: relative; /* Define a posição relativa para o botão de fechar */
-    box-shadow: 0 0 15px rgba(0, 0, 0, 0.2); /* Adiciona sombra ao popup */
+    background-color: #fff; /* Branco */
+    padding: 20px;
+    border-radius: 8px;
+    width: 80%;
+    max-width: 600px;
+    position: relative;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+    max-height: 80vh; /* Limita a altura do popup */
+    overflow-y: auto; /* Adiciona barra de rolagem se necessário */
 }
 
-/* Estilos para o botão de fechar do popup */
 .popup-close {
-    position: absolute; /* Define a posição absoluta dentro do popup */
-    top: 10px; /* Alinha ao topo */
-    right: 10px; /* Alinha à direita */
-    font-size: 24px; /* Define o tamanho da fonte */
-    font-weight: bold; /* Define a espessura da fonte */
-    color: #333; /* Define a cor do texto */
-    cursor: pointer; /* Define o cursor como ponteiro */
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    cursor: pointer;
+    font-size: 24px;
+    color: #333; /* Cinza escuro */
 }
 
-/* Estilos para o botão de fechar ao passar o mouse */
 .popup-close:hover {
-    color: #e74c3c; /* Muda a cor ao passar o mouse */
+    color: #000; /* Preto */
 }
 
-/* Estilos para tabelas dentro do popup */
-.popup-content table {
-    width: 100%; /* Define a largura da tabela como 100% do container */
-    border-collapse: collapse; /* Remove espaçamento entre bordas */
+/* Estilo para riscar texto */
+.riscado {
+    text-decoration: line-through;
+    color: #999; /* Cinza claro para o texto riscado */
 }
 
-/* Estilos para cabeçalhos e células das tabelas no popup */
-.popup-content th, .popup-content td {
-    border: 1px solid #ddd; /* Define borda para cabeçalhos e células */
-    padding: 12px; /* Adiciona padding interno */
-    text-align: left; /* Alinha o texto à esquerda */
+/* Estilo para o botão quando o pedido é salvo */
+.pedido-salvo {
+    background-color: #4CAF50; /* Verde */
+    color: white; /* Texto branco */
 }
 
-/* Estilos para cabeçalhos da tabela no popup */
-.popup-content th {
-    background-color: #f4f4f4; /* Define uma cor de fundo clara */
-    color: #333; /* Define a cor do texto */
-}
-
-/* Estilos para linhas pares da tabela no popup */
-.popup-content tr:nth-child(even) {
-    background-color: #f9f9f9; /* Define uma cor de fundo alternada */
-}
-
-/* Estilos para linhas ao passar o mouse no popup */
-.popup-content tr:hover {
-    background-color: #f1f1f1; /* Adiciona destaque ao passar o mouse */
-}

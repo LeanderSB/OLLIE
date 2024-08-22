@@ -1,10 +1,7 @@
-// Adiciona um listener para o evento de mudança no input de arquivo
 document.getElementById('upload-xlsx').addEventListener('change', handleFileSelect, false);
 
-let pedidosData = []; // Armazena dados dos pedidos
-let detalhesData = []; // Armazena dados dos detalhes
+let pedidosData = {}; // Armazena dados dos pedidos e modelos
 
-// Função para lidar com a seleção do arquivo
 function handleFileSelect(event) {
     const file = event.target.files[0];
     if (!file) {
@@ -14,78 +11,106 @@ function handleFileSelect(event) {
 
     const reader = new FileReader();
     reader.onload = function(e) {
-        try {
-            const data = new Uint8Array(e.target.result);
-            const workbook = XLSX.read(data, { type: 'array' });
+        const data = new Uint8Array(e.target.result);
+        const workbook = XLSX.read(data, { type: 'array' });
 
-            // Verifica se a aba "Pedidos" existe
-            const pedidosSheetName = workbook.SheetNames.find(name => name === 'Pedidos');
-            // Verifica se a aba "Dados" existe
-            const detalhesSheetName = workbook.SheetNames.find(name => name === 'Dados');
+        const sheetName = workbook.SheetNames.find(name => name === 'Dados');
+        if (sheetName) {
+            const worksheet = workbook.Sheets[sheetName];
+            const jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
 
-            if (pedidosSheetName) {
-                const pedidosWorksheet = workbook.Sheets[pedidosSheetName];
-                pedidosData = XLSX.utils.sheet_to_json(pedidosWorksheet);
-                renderPedidos(); // Renderiza a tabela de pedidos
-            } else {
-                document.getElementById('tabela-pedidos').innerHTML = 'A aba "Pedidos" não foi encontrada.';
-            }
-
-            if (detalhesSheetName) {
-                const detalhesWorksheet = workbook.Sheets[detalhesSheetName];
-                detalhesData = XLSX.utils.sheet_to_json(detalhesWorksheet);
-            } else {
-                console.warn('A aba "Dados" não foi encontrada.');
-            }
-        } catch (error) {
-            console.error('Erro ao processar o arquivo:', error);
-            document.getElementById('tabela-pedidos').innerHTML = 'Ocorreu um erro ao processar o arquivo.';
+            processSheetData(jsonData);
+        } else {
+            document.getElementById('container-pedidos').innerHTML = '<p style="color: red;">A aba "Dados" não foi encontrada.</p>';
         }
     };
     reader.readAsArrayBuffer(file);
 }
 
-// Função para renderizar a tabela de pedidos
+function processSheetData(data) {
+    pedidosData = {};
+    data.forEach(row => {
+        const [ , , pedido, modelo, quantidade, cor, quantidadeVol] = row;
+        if (pedido && modelo && quantidade && cor && quantidadeVol) {
+            if (!pedidosData[pedido]) {
+                pedidosData[pedido] = [];
+            }
+            pedidosData[pedido].push({ modelo, quantidade, cor, quantidadeVol });
+        }
+    });
+
+    renderPedidos();
+}
+
 function renderPedidos() {
-    if (pedidosData.length === 0) {
-        document.getElementById('tabela-pedidos').innerHTML = 'Nenhum pedido encontrado.';
+    if (Object.keys(pedidosData).length === 0) {
+        document.getElementById('container-pedidos').innerHTML = '<p>Nenhum pedido encontrado.</p>';
         return;
     }
 
-    let html = '<table><tr><th>Pedido</th></tr>';
-    pedidosData.forEach(pedido => {
-        html += `<tr><td><a href="#" onclick="showDetalhes(${pedido['PC17Pedido']})">${pedido['PC17Pedido']}</a></td></tr>`;
-    });
-    html += '</table>';
-    document.getElementById('tabela-pedidos').innerHTML = html;
+    let html = '';
+    for (const pedido in pedidosData) {
+        if (pedido === 'PC17Pedido') continue; // Remove o pedido 'PC17Pedido'
+        html += `<button class="pedido-btn" onclick="showModelos('${pedido}')">${pedido}</button>`;
+    }
+    document.getElementById('container-pedidos').innerHTML = html;
 }
 
-// Função para exibir detalhes do pedido no popup
-function showDetalhes(pedidoNumero) {
-    const detalhes = detalhesData.filter(item => item['PC17Pedido'] === pedidoNumero);
+function showModelos(pedidoNumero) {
+    const modelos = pedidosData[pedidoNumero];
+    let html = `<h3>Modelos do Pedido ${pedidoNumero}</h3><form id="modelos-form">`;
 
-    if (detalhes.length === 0) {
-        document.getElementById('popup-detalhes').innerHTML = 'Nenhum detalhe encontrado para este pedido.';
+    modelos.forEach(({ modelo, quantidade, cor, quantidadeVol }) => {
+        html += `
+            <div class="modelo-container">
+                <input type="checkbox" id="${modelo}" name="${modelo}" onchange="toggleRiscado(this)">
+                <label for="${modelo}">
+                    ${modelo} (${quantidade} caixas) - Cor: ${cor}, Volumes: ${quantidadeVol}
+                </label>
+            </div>
+        `;
+    });
+
+    html += '<button type="submit" onclick="salvarPedido(event, \'' + pedidoNumero + '\')">Salvar</button></form>';
+    document.getElementById('popup-modelos').innerHTML = html;
+    document.getElementById('popup').style.display = 'flex';
+}
+
+function toggleRiscado(checkbox) {
+    const label = checkbox.nextElementSibling;
+    if (checkbox.checked) {
+        label.classList.add('riscado');
     } else {
-        let html = '<table><tr><th>Modelo</th><th>Quantidade</th></tr>';
-        detalhes.forEach(item => {
-            html += `<tr><td>${item['PC17Modelo']}</td><td>${item['Qdade vol.']}</td></tr>`;
-        });
-        html += '</table>';
-        document.getElementById('popup-detalhes').innerHTML = html;
+        label.classList.remove('riscado');
+    }
+}
+
+function salvarPedido(event, pedidoNumero) {
+    event.preventDefault();
+    const checkboxes = document.querySelectorAll('#modelos-form input[type="checkbox"]');
+    let todosSelecionados = true;
+
+    checkboxes.forEach(checkbox => {
+        if (!checkbox.checked) {
+            todosSelecionados = false;
+        }
+    });
+
+    if (todosSelecionados) {
+        const pedidoBtn = document.querySelector(`.pedido-btn[onclick="showModelos('${pedidoNumero}')"]`);
+        pedidoBtn.classList.add('pedido-salvo');
     }
 
-    document.getElementById('popup').style.display = 'flex'; // Exibe o popup
+    document.getElementById('popup').style.display = 'none';
 }
 
-// Adiciona um listener para o botão de fechar do popup
 document.getElementById('popup-close').addEventListener('click', () => {
-    document.getElementById('popup').style.display = 'none'; // Oculta o popup
+    document.getElementById('popup').style.display = 'none';
 });
 
-// Adiciona um listener para clicar fora do popup para fechar
 window.addEventListener('click', (event) => {
     if (event.target === document.getElementById('popup')) {
-        document.getElementById('popup').style.display = 'none'; // Oculta o popup
+        document.getElementById('popup').style.display = 'none';
     }
 });
+

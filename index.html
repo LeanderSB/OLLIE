@@ -4,258 +4,32 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pedidos PA</title>
+    <!-- Inclusão do arquivo CSS -->
+    <link rel="stylesheet" href="style.css">
     <!-- Inclusão da biblioteca SheetJS -->
     <script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
-    <style>
-        /* Estilos gerais do corpo da página */
-        body {
-            font-family: Arial, sans-serif; /* Define a fonte padrão */
-            margin: 0; /* Remove margens padrão */
-            padding: 0; /* Remove padding padrão */
-            background-color: #f4f4f4; /* Define a cor de fundo */
-        }
-
-        /* Estilos para o título principal */
-        h1 {
-            text-align: center; /* Centraliza o texto */
-            color: #333; /* Define a cor do texto */
-            margin-top: 20px; /* Adiciona margem no topo */
-        }
-
-        /* Estilos para o subtítulo */
-        h2 {
-            text-align: center; /* Centraliza o texto */
-            color: #666; /* Define uma cor de texto mais clara */
-        }
-
-        /* Estilos para o input de arquivo */
-        input[type="file"] {
-            display: block; /* Exibe o input como um bloco */
-            margin: 20px auto; /* Centraliza horizontalmente e adiciona margem vertical */
-            padding: 10px; /* Adiciona padding interno */
-            font-size: 16px; /* Define o tamanho da fonte */
-        }
-
-        /* Estilos para o container da tabela de pedidos */
-        #tabela-pedidos {
-            display: flex; /* Exibe o container como um flex container */
-            justify-content: center; /* Centraliza o conteúdo horizontalmente */
-            margin-top: 20px; /* Adiciona margem no topo */
-        }
-
-        /* Estilos gerais para tabelas */
-        table {
-            width: 100%; /* Define a largura da tabela como 100% do container */
-            max-width: 800px; /* Define uma largura máxima */
-            border-collapse: collapse; /* Remove espaçamento entre bordas */
-            background: #fff; /* Define a cor de fundo da tabela */
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Adiciona sombra à tabela */
-        }
-
-        /* Estilos para cabeçalhos e células das tabelas */
-        th, td {
-            border: 1px solid #ddd; /* Define borda para cabeçalhos e células */
-            padding: 12px; /* Adiciona padding interno */
-            text-align: left; /* Alinha o texto à esquerda */
-        }
-
-        /* Estilos para cabeçalhos da tabela */
-        th {
-            background-color: #f4f4f4; /* Define uma cor de fundo clara */
-            color: #333; /* Define a cor do texto */
-        }
-
-        /* Estilos para linhas pares da tabela */
-        tr:nth-child(even) {
-            background-color: #f9f9f9; /* Define uma cor de fundo alternada */
-        }
-
-        /* Estilos para linhas ao passar o mouse */
-        tr:hover {
-            background-color: #f1f1f1; /* Adiciona destaque ao passar o mouse */
-        }
-
-        /* Estilos para o popup */
-        .popup {
-            display: none; /* Inicialmente oculto */
-            position: fixed; /* Fixa a posição na tela */
-            left: 0; /* Alinha à esquerda */
-            top: 0; /* Alinha ao topo */
-            width: 100%; /* Define a largura como 100% da tela */
-            height: 100%; /* Define a altura como 100% da tela */
-            background: rgba(0, 0, 0, 0.6); /* Define um fundo semi-transparente */
-            justify-content: center; /* Centraliza o conteúdo horizontalmente */
-            align-items: center; /* Centraliza o conteúdo verticalmente */
-            z-index: 1000; /* Define a ordem de empilhamento */
-        }
-
-        /* Estilos para o conteúdo do popup */
-        .popup-content {
-            background: #fff; /* Define a cor de fundo */
-            padding: 20px; /* Adiciona padding interno */
-            border-radius: 5px; /* Adiciona bordas arredondadas */
-            max-width: 90%; /* Define uma largura máxima */
-            max-height: 80%; /* Define uma altura máxima */
-            overflow-y: auto; /* Adiciona rolagem vertical se necessário */
-            position: relative; /* Define a posição relativa para o botão de fechar */
-            box-shadow: 0 0 15px rgba(0, 0, 0, 0.2); /* Adiciona sombra ao popup */
-        }
-
-        /* Estilos para o botão de fechar do popup */
-        .popup-close {
-            position: absolute; /* Define a posição absoluta dentro do popup */
-            top: 10px; /* Alinha ao topo */
-            right: 10px; /* Alinha à direita */
-            font-size: 24px; /* Define o tamanho da fonte */
-            font-weight: bold; /* Define a espessura da fonte */
-            color: #333; /* Define a cor do texto */
-            cursor: pointer; /* Define o cursor como ponteiro */
-        }
-
-        /* Estilos para o botão de fechar ao passar o mouse */
-        .popup-close:hover {
-            color: #e74c3c; /* Muda a cor ao passar o mouse */
-        }
-
-        /* Estilos para tabelas dentro do popup */
-        .popup-content table {
-            width: 100%; /* Define a largura da tabela como 100% do container */
-            border-collapse: collapse; /* Remove espaçamento entre bordas */
-        }
-
-        /* Estilos para cabeçalhos e células das tabelas no popup */
-        .popup-content th, .popup-content td {
-            border: 1px solid #ddd; /* Define borda para cabeçalhos e células */
-            padding: 12px; /* Adiciona padding interno */
-            text-align: left; /* Alinha o texto à esquerda */
-        }
-
-        /* Estilos para cabeçalhos da tabela no popup */
-        .popup-content th {
-            background-color: #f4f4f4; /* Define uma cor de fundo clara */
-            color: #333; /* Define a cor do texto */
-        }
-
-        /* Estilos para linhas pares da tabela no popup */
-        .popup-content tr:nth-child(even) {
-            background-color: #f9f9f9; /* Define uma cor de fundo alternada */
-        }
-
-        /* Estilos para linhas ao passar o mouse no popup */
-        .popup-content tr:hover {
-            background-color: #f1f1f1; /* Adiciona destaque ao passar o mouse */
-        }
-    </style>
 </head>
 <body>
-    <h1>Pedidos PA</h1>
-    <h2>Lista de Pedidos:</h2>
-    <input type="file" id="upload-xlsx" accept=".xlsx">
+    <header>
+        <h1>Pedidos PA</h1>
+    </header>
+    <main>
+        <section>
+            <h2>Lista de Pedidos</h2>
+            <input type="file" id="upload-xlsx" accept=".xlsx" />
+            <div id="container-pedidos" class="container-pedidos"></div>
+        </section>
+    </main>
 
-    <!-- Container para a tabela de pedidos -->
-    <div id="tabela-pedidos"></div>
-
-    <!-- Popup para exibir detalhes dos pedidos -->
+    <!-- Popup para exibir modelos dos pedidos -->
     <div id="popup" class="popup">
         <div class="popup-content">
             <span id="popup-close" class="popup-close">&times;</span>
-            <!-- Container para os detalhes do pedido -->
-            <div id="popup-detalhes"></div>
+            <div id="popup-modelos"></div>
         </div>
     </div>
 
-    <script>
-        // Adiciona um listener para o evento de mudança no input de arquivo
-        document.getElementById('upload-xlsx').addEventListener('change', handleFileSelect, false);
-
-        let pedidosData = []; // Armazena dados dos pedidos
-        let detalhesData = []; // Armazena dados dos detalhes
-
-        // Função para lidar com a seleção do arquivo
-        function handleFileSelect(event) {
-            const file = event.target.files[0];
-            if (!file) {
-                alert('Nenhum arquivo selecionado.');
-                return;
-            }
-
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                try {
-                    const data = new Uint8Array(e.target.result);
-                    const workbook = XLSX.read(data, { type: 'array' });
-
-                    // Verifica se a aba "Pedidos" existe
-                    const pedidosSheetName = workbook.SheetNames.find(name => name === 'Pedidos');
-                    // Verifica se a aba "Dados" existe
-                    const detalhesSheetName = workbook.SheetNames.find(name => name === 'Dados');
-
-                    if (pedidosSheetName) {
-                        const pedidosWorksheet = workbook.Sheets[pedidosSheetName];
-                        pedidosData = XLSX.utils.sheet_to_json(pedidosWorksheet);
-                        renderPedidos(); // Renderiza a tabela de pedidos
-                    } else {
-                        document.getElementById('tabela-pedidos').innerHTML = 'A aba "Pedidos" não foi encontrada.';
-                    }
-
-                    if (detalhesSheetName) {
-                        const detalhesWorksheet = workbook.Sheets[detalhesSheetName];
-                        detalhesData = XLSX.utils.sheet_to_json(detalhesWorksheet);
-                    } else {
-                        console.warn('A aba "Dados" não foi encontrada.');
-                    }
-                } catch (error) {
-                    console.error('Erro ao processar o arquivo:', error);
-                    document.getElementById('tabela-pedidos').innerHTML = 'Ocorreu um erro ao processar o arquivo.';
-                }
-            };
-            reader.readAsArrayBuffer(file);
-        }
-
-        // Função para renderizar a tabela de pedidos
-        function renderPedidos() {
-            if (pedidosData.length === 0) {
-                document.getElementById('tabela-pedidos').innerHTML = 'Nenhum pedido encontrado.';
-                return;
-            }
-
-            let html = '<table><tr><th>Pedido</th></tr>';
-            pedidosData.forEach(pedido => {
-                html += `<tr><td><a href="#" onclick="showDetalhes(${pedido['PC17Pedido']})">${pedido['PC17Pedido']}</a></td></tr>`;
-            });
-            html += '</table>';
-            document.getElementById('tabela-pedidos').innerHTML = html;
-        }
-
-        // Função para exibir detalhes do pedido no popup
-        function showDetalhes(pedidoNumero) {
-            const detalhes = detalhesData.filter(item => item['PC17Pedido'] === pedidoNumero);
-
-            if (detalhes.length === 0) {
-                document.getElementById('popup-detalhes').innerHTML = 'Nenhum detalhe encontrado para este pedido.';
-            } else {
-                let html = '<table><tr><th>Modelo</th><th>Quantidade</th></tr>';
-                detalhes.forEach(item => {
-                    html += `<tr><td>${item['PC17Modelo']}</td><td>${item['Qdade vol.']}</td></tr>`;
-                });
-                html += '</table>';
-                document.getElementById('popup-detalhes').innerHTML = html;
-            }
-
-            document.getElementById('popup').style.display = 'flex'; // Exibe o popup
-        }
-
-        // Adiciona um listener para o botão de fechar do popup
-        document.getElementById('popup-close').addEventListener('click', () => {
-            document.getElementById('popup').style.display = 'none'; // Oculta o popup
-        });
-
-        // Adiciona um listener para clicar fora do popup para fechar
-        window.addEventListener('click', (event) => {
-            if (event.target === document.getElementById('popup')) {
-                document.getElementById('popup').style.display = 'none'; // Oculta o popup
-            }
-        });
-    </script>
+    <!-- Inclusão do arquivo JavaScript -->
+    <script src="script.js"></script>
 </body>
 </html>
