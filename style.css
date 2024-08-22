@@ -86,8 +86,6 @@ input[type="file"] {
     max-width: 600px;
     position: relative;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
-    max-height: 80vh; /* Limita a altura do popup */
-    overflow-y: auto; /* Adiciona barra de rolagem se necessário */
 }
 
 .popup-close {
@@ -103,6 +101,49 @@ input[type="file"] {
     color: #000; /* Preto */
 }
 
+/* Estilo para checklists e botões */
+form div {
+    margin-bottom: 10px;
+}
+
+input[type="checkbox"] {
+    margin-right: 10px;
+}
+
+button {
+    background-color: #333; /* Cinza escuro */
+    color: #fff; /* Branco */
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+button:hover {
+    background-color: #000; /* Preto */
+}
+
+/* Estilo para os containers de modelos */
+.modelo-container {
+    background-color: #f9f9f9;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 10px;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+}
+
+.modelo-container input[type="checkbox"] {
+    margin-right: 10px;
+}
+
+.modelo-container label {
+    flex-grow: 1;
+    font-size: 14px;
+}
+
 /* Estilo para riscar texto */
 .riscado {
     text-decoration: line-through;
@@ -114,4 +155,3 @@ input[type="file"] {
     background-color: #4CAF50; /* Verde */
     color: white; /* Texto branco */
 }
-
