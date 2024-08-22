@@ -30,6 +30,8 @@ section {
     margin: auto; /* Centraliza a seção horizontalmente */
 }
 
+
+
 /* Estilo do input de arquivo */
 input[type="file"] {
     margin-bottom: 20px; /* Espaçamento abaixo do input */
@@ -154,4 +156,37 @@ button:hover {
 .pedido-salvo {
     background-color: #4CAF50; /* Cor de fundo verde */
     color: white; /* Cor do texto branca */
+}
+
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-image: url('Ollie-bra.jpg');
+    background-size: cover; /* Ajusta a imagem para cobrir toda a tela */
+    background-repeat: no-repeat; /* Evita repetição da imagem */
+    background-position: center; /* Centraliza a imagem */
+    background-attachment: fixed; /* Fixa a imagem para que não role com a página */
+}
+
+body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.7); /* Camada branca semi-transparente */
+    z-index: -1; /* Coloca a camada atrás do conteúdo */
+}
+
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-image: url('Ollie-bra.jpg');
+    background-size: contain; /* Ajusta a imagem para caber dentro da tela */
+    background-repeat: no-repeat; /* Evita repetição da imagem */
+    background-position: center; /* Centraliza a imagem */
+    background-color: #f4f4f4; /* Cor de fundo caso a imagem não cubra toda a tela */
 }
