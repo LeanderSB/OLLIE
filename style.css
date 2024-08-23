@@ -156,6 +156,7 @@ button:hover {
 .pedido-salvo {
     background-color: #4CAF50; /* Cor de fundo verde */
     color: white; /* Cor do texto branca */
+
 }
 
 body {
@@ -189,4 +190,23 @@ body {
     background-repeat: no-repeat; /* Evita repetição da imagem */
     background-position: center; /* Centraliza a imagem */
     background-color: #f4f4f4; /* Cor de fundo caso a imagem não cubra toda a tela */
+}
+
+/* Estilo para o container do número de ficha */
+.ficha-container {
+    margin-top: 20px; /* Espaçamento acima do campo */
+    display: flex;
+    flex-direction: column;
+}
+
+.ficha-container label {
+    margin-bottom: 5px; /* Espaçamento abaixo do label */
+    font-weight: bold; /* Negrito para o label */
+}
+
+.ficha-container input[type="text"] {
+    padding: 10px; /* Espaçamento interno */
+    border: 1px solid #ccc; /* Borda cinza clara */
+    border-radius: 4px; /* Bordas arredondadas */
+    font-size: 16px; /* Tamanho da fonte */
 }

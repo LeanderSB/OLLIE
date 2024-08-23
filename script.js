@@ -3,8 +3,9 @@ document.getElementById('upload-xlsx').addEventListener('change', handleFileSele
 
 // Objeto para armazenar dados dos pedidos e modelos
 let pedidosData = {};
+let fichaData = []; // Para armazenar os números de ficha formatados
 
-// Função para lidar com a seleção do arquivo XLSX
+// Função para lidar com a seleção do arquivo XLSX (Quando carrego o excel)
 function handleFileSelect(event) {
     const file = event.target.files[0]; // Obtém o arquivo selecionado
     if (!file) {
@@ -16,18 +17,32 @@ function handleFileSelect(event) {
     reader.onload = function(e) {
         const data = new Uint8Array(e.target.result); // Lê o conteúdo do arquivo
         const workbook = XLSX.read(data, { type: 'array' }); // Lê o conteúdo como uma planilha
-
+        //Se ele encontra a pagina dados na planilha ele processa
         const sheetName = workbook.SheetNames.find(name => name === 'Dados'); // Encontra a aba 'Dados'
         if (sheetName) {
             const worksheet = workbook.Sheets[sheetName]; // Obtém a aba 'Dados'
             const jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1 }); // Converte a aba para JSON
 
-            processSheetData(jsonData); // Processa os dados da planilha
+            processFichaData(jsonData); // Processa a aba 'Dados'
+            processSheetData(jsonData); // Processa a aba 'Pedidos'
         } else {
             document.getElementById('container-pedidos').innerHTML = '<p style="color: red;">A aba "Dados" não foi encontrada.</p>'; // Mensagem de erro se a aba não for encontrada
         }
     };
     reader.readAsArrayBuffer(file); // Lê o arquivo como um array buffer
+}
+
+// Função para processar a aba 'Dados' e armazenar os números de ficha formatados
+function processFichaData(data) {
+    fichaData = [];
+    data.forEach(row => {
+        const anoFiP = row[36]; // Coluna AK (índice 36)
+        const ficFiP = row[37]; // Coluna AL (índice 37)
+        const modelo = row[27]; // Coluna AB (índice 27)
+        if (anoFiP && ficFiP && modelo) {
+            fichaData.push({ fichaNumero: `${anoFiP}-${ficFiP}`, modelo }); // Adiciona o número de ficha e modelo à lista
+        }
+    });
 }
 
 // Função para processar os dados da planilha
@@ -61,25 +76,86 @@ function renderPedidos() {
     document.getElementById('container-pedidos').innerHTML = html; // Adiciona os botões ao container
 }
 
-// Função para exibir modelos do pedido em um popup
+// Função para exibir modelos do pedido em um popup com campo para número de ficha
 function showModelos(pedidoNumero) {
     const modelos = pedidosData[pedidoNumero]; // Obtém os modelos do pedido
     let html = `<h3>Modelos do Pedido ${pedidoNumero}</h3><form id="modelos-form">`;
 
+    // Adiciona os modelos ao formulário
     modelos.forEach(({ modelo, quantidade, cor, quantidadeVol }) => {
         html += `
             <div class="modelo-container">
                 <input type="checkbox" id="${modelo}" name="${modelo}" onchange="toggleRiscado(this)">
                 <label for="${modelo}">
-                    ${modelo} (${quantidade} caixas) - Cor: ${cor}, Volumes: ${quantidadeVol}
+                    ${modelo} ${quantidade} ${cor}: (${quantidadeVol} Pares)
                 </label>
             </div>
         `;
     });
 
+    // Adiciona o campo de entrada para o número de ficha
+    html += `
+        <div class="ficha-container">
+            <label for="numero-ficha">Número da Ficha:</label>
+            <input type="text" id="numero-ficha" name="numero-ficha" placeholder="Digite o número da ficha" onkeypress="handleKeyPress(event)">
+        </div>
+        <button type="button" onclick="confirmarFicha('${pedidoNumero}')">Confirmar Ficha</button>
+    `;
+
+    // Adiciona o botão de salvar
     html += '<button type="submit" onclick="salvarPedido(event, \'' + pedidoNumero + '\')">Salvar</button></form>';
-    document.getElementById('popup-modelos').innerHTML = html; // Adiciona o conteúdo ao popup
-    document.getElementById('popup').style.display = 'flex'; // Exibe o popup
+
+    // Exibe o conteúdo no popup
+    document.getElementById('popup-modelos').innerHTML = html; 
+    document.getElementById('popup').style.display = 'flex'; 
+}
+
+// Função para lidar com a tecla Enter no campo de número de ficha
+function handleKeyPress(event) {
+    if (event.key === 'Enter') {
+        event.preventDefault(); // Previne o comportamento padrão da tecla Enter
+        const pedidoNumero = document.querySelector('#modelos-form button[type="submit"]').getAttribute('onclick').match(/'(.+?)'/)[1];
+        confirmarFicha(pedidoNumero);
+    }
+}
+
+// Função para confirmar o número da ficha e marcar os checkboxes correspondentes
+function confirmarFicha(pedidoNumero) {
+    // Obtém o número da ficha digitado
+    const numeroFicha = document.getElementById('numero-ficha').value;
+
+    // Verifica se o número da ficha digitado corresponde a algum número na matriz
+    fichaData.forEach(({ fichaNumero, modelo }) => {
+        if (fichaNumero === numeroFicha) {
+            // Marca o checkbox do modelo correspondente, se ele existir no pedido
+            pedidosData[pedidoNumero].forEach(({ modelo: pedidoModelo }) => {
+                if (pedidoModelo === modelo) {
+                    document.getElementById(pedidoModelo).checked = true;
+                    toggleRiscado(document.getElementById(pedidoModelo)); // Atualiza a classe 'riscado'
+                }
+            });
+        }
+    });
+
+    // Atualiza a cor do botão de pedido
+    const checkboxes = document.querySelectorAll('#modelos-form input[type="checkbox"]');
+    let todosSelecionados = true;
+
+    checkboxes.forEach(checkbox => {
+        if (!checkbox.checked) {
+            todosSelecionados = false; // Define todosSelecionados como false se algum checkbox não estiver marcado
+        }
+    });
+
+    // Obtém o botão do pedido correspondente
+    const pedidoBtn = document.querySelector(`.pedido-btn[onclick="showModelos('${pedidoNumero}')"]`);
+
+    // Se todos os checkboxes estiverem marcados, marca o pedido como salvo
+    if (todosSelecionados) {
+        pedidoBtn.classList.add('pedido-salvo'); // Verde para indicar que todos os modelos foram selecionados
+    } else {
+        pedidoBtn.style.backgroundColor = '#ff4c4c'; // Vermelho para indicar que nem todos os modelos foram selecionados
+    }
 }
 
 // Função para alternar o estilo riscado do texto
@@ -95,7 +171,9 @@ function toggleRiscado(checkbox) {
 // Função para salvar o pedido quando todos os modelos são selecionados
 function salvarPedido(event, pedidoNumero) {
     event.preventDefault(); // Previne o comportamento padrão do formulário
-    const checkboxes = document.querySelectorAll('#modelos-form input[type="checkbox"]'); // Obtém todos os checkboxes do formulário
+
+    // Obtém todos os checkboxes do formulário
+    const checkboxes = document.querySelectorAll('#modelos-form input[type="checkbox"]');
     let todosSelecionados = true;
 
     checkboxes.forEach(checkbox => {
@@ -104,12 +182,18 @@ function salvarPedido(event, pedidoNumero) {
         }
     });
 
+    // Obtém o botão do pedido correspondente
+    const pedidoBtn = document.querySelector(`.pedido-btn[onclick="showModelos('${pedidoNumero}')"]`);
+
+    // Se todos os checkboxes estiverem marcados, marca o pedido como salvo
     if (todosSelecionados) {
-        const pedidoBtn = document.querySelector(`.pedido-btn[onclick="showModelos('${pedidoNumero}')"]`); // Obtém o botão do pedido
-        pedidoBtn.classList.add('pedido-salvo'); // Adiciona a classe 'pedido-salvo' ao botão
+        pedidoBtn.classList.add('pedido-salvo'); // Verde para indicar que todos os modelos foram selecionados
+    } else {
+        pedidoBtn.style.backgroundColor = '#ff4c4c'; // Vermelho para indicar que nem todos os modelos foram selecionados
     }
 
-    document.getElementById('popup').style.display = 'none'; // Oculta o popup
+    // Fecha o popup
+    document.getElementById('popup').style.display = 'none';
 }
 
 // Adiciona um ouvinte de evento para fechar o popup quando o botão de fechar é clicado
