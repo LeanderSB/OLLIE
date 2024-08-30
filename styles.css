@@ -1,0 +1,110 @@
+/* Estilo geral para a página */
+body {
+    font-family: Arial, sans-serif;
+    margin: 20px;
+}
+
+/* Estilo do título da página */
+h1 {
+    text-align: center;
+}
+
+/* Estilo para a lista de pedidos */
+#pedido-list {
+    margin-top: 20px;
+}
+
+/* Estilo individual de cada pedido */
+.pedido {
+    background-color: #f0f0f0;
+    margin-bottom: 10px;
+    padding: 15px;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+}
+
+/* Alteração da cor de fundo ao passar o mouse */
+.pedido:hover {
+    background-color: #e0e0e0;
+}
+
+/* Estilo para o overlay (fundo escuro atrás do popup) */
+#overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: none;
+}
+
+/* Estilo geral do popup */
+#popup {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #fff;
+    padding: 20px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+    z-index: 1000;
+    display: none;
+    width: 60%;
+    max-width: 500px;
+    border-radius: 5px;
+}
+
+/* Estilo para o botão de fechar o popup */
+#popup .close {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    cursor: pointer;
+    font-size: 20px;
+}
+
+/* Estilo para o container de cada item de pedido no popup */
+.container {
+    background-color: #f9f9f9;
+    margin-bottom: 10px;
+    padding: 10px;
+    border-radius: 5px;
+}
+
+/* Estilo para o campo de entrada da ficha */
+#ficha-input {
+    margin-top: 20px;
+}
+
+/* Estilo do texto da label da ficha */
+#ficha-input label {
+    font-weight: bold;
+    margin-right: 10px;
+}
+
+/* Estilo do campo de entrada para digitar a ficha */
+#ficha-input input {
+    padding: 5px;
+    font-size: 14px;
+    width: 70%;
+    margin-right: 10px;
+}
+
+/* Estilo do botão de verificar a ficha */
+#ficha-input button {
+    padding: 5px 10px;
+    font-size: 14px;
+    cursor: pointer;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 3px;
+}
+
+/* Estilo para itens riscados */
+.riscado {
+    text-decoration: line-through;
+    color: red;
+}
