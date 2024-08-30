@@ -1,160 +1,162 @@
-// Função para lidar com a leitura do arquivo XLSX
-document.getElementById('file-input').addEventListener('change', handleFile, false);
+let pedidoMap = new Map();
+let currentPedidoElement = null;
+let timer;
 
-let pedidoDetalhes = []; // Array para armazenar os detalhes dos pedidos
-let pedidoMap = new Map(); // Mapa para associar números de pedidos aos seus detalhes
+document.getElementById('fileInput').addEventListener('change', handleFile);
+document.getElementById('fichaInput').addEventListener('input', () => {
+    clearTimeout(timer);
+    timer = setTimeout(verificarFicha, 2000);  // Aguarda 2 segundos antes de chamar verificarFicha
+});
 
 function handleFile(event) {
     const file = event.target.files[0];
     const reader = new FileReader();
-
-    reader.onload = function(e) {
+    reader.onload = function (e) {
         const data = new Uint8Array(e.target.result);
-        const workbook = XLSX.read(data, {type: 'array'});
+        const workbook = XLSX.read(data, { type: 'array' });
+        const sheet = workbook.Sheets['Dados'];
 
-        const sheetName = 'Dados'; // Nome da aba que estamos trabalhando
-        const sheet = workbook.Sheets[sheetName];
-        const pedidos = XLSX.utils.sheet_to_json(sheet, {header: 1});
+        const pedidos = XLSX.utils.sheet_to_json(sheet, { header: 1 });
+        const COL_PEDIDO = 2; // Coluna C na planilha
+        const COL_MODELO = 27; // Coluna AB na planilha
+        const COL_COR = 28; // Coluna AC na planilha
+        const COL_ANO = 36; // Coluna AK na planilha
+        const COL_FICHA = 37; // Coluna AL na planilha
 
-        const pedidoList = document.getElementById('pedido-list');
-        pedidoList.innerHTML = ''; // Limpar a lista antes de renderizar
+        pedidoMap = new Map();
 
-        pedidoMap.clear();
-        pedidoDetalhes = pedidos;
-
-        // Índices das colunas que vamos utilizar
-        const COL_PEDIDO = 2;  // Coluna C - Número do Pedido
-        const COL_MODELO = 27; // Coluna AB - Modelo
-        const COL_COR = 28;    // Coluna AC - Cor
-
-        // Loop para mapear os pedidos e seus detalhes
+        // Agrupar pedidos únicos
         for (let i = 1; i < pedidos.length; i++) {
-            const pedidoNumero = pedidos[i][COL_PEDIDO];
+            const pedidoNum = pedidos[i][COL_PEDIDO];
             const modelo = pedidos[i][COL_MODELO];
             const cor = pedidos[i][COL_COR];
+            const ano = pedidos[i][COL_ANO];
+            const ficha = pedidos[i][COL_FICHA];
 
-            if (pedidoNumero) {
-                if (!pedidoMap.has(pedidoNumero)) {
-                    pedidoMap.set(pedidoNumero, []);
-                }
-                pedidoMap.get(pedidoNumero).push({modelo, cor});
+            if (pedidoMap.has(pedidoNum)) {
+                pedidoMap.get(pedidoNum).push([modelo, cor, ano, ficha]);
+            } else {
+                pedidoMap.set(pedidoNum, [[modelo, cor, ano, ficha]]);
             }
         }
 
-        // Exibir a lista de pedidos na interface
-        pedidoMap.forEach((detalhes, pedidoNumero) => {
-            const pedidoDiv = document.createElement('div');
-            pedidoDiv.className = 'pedido';
-            pedidoDiv.textContent = `Pedido ${pedidoNumero}`;
-            pedidoDiv.addEventListener('click', () => showPopup(detalhes));
-            pedidoList.appendChild(pedidoDiv);
-        });
+        exibirPedidos();
     };
-
-    reader.readAsArrayBuffer(file); // Ler o arquivo como ArrayBuffer
+    reader.readAsArrayBuffer(file);
 }
 
-// Função para exibir o popup com os detalhes do pedido
-function showPopup(detalhes) {
-    const popup = document.getElementById('popup');
-    const overlay = document.getElementById('overlay');
-    const content = document.getElementById('pedido-content');
-    const fichaInput = document.getElementById('ficha');
+function exibirPedidos() {
+    const pedidoList = document.getElementById('pedidoList');
+    pedidoList.innerHTML = '';
 
-    content.innerHTML = '<h2>Detalhes do Pedido</h2>';
-    content.innerHTML += `<div id="pedido-itens"></div>`;
-    const pedidoItensDiv = document.getElementById('pedido-itens');
+    pedidoMap.forEach((value, key) => {
+        const pedidoItem = document.createElement('div');
+        pedidoItem.className = 'pedido-item';
+        pedidoItem.textContent = 'Pedido ' + key;
+        pedidoItem.onclick = () => showPopup(key, pedidoItem);
+        pedidoList.appendChild(pedidoItem);
+    });
+}
 
-    // Exibir os detalhes dos modelos e cores no popup
-    detalhes.forEach(detalhe => {
+function showPopup(pedidoNum, pedidoElement) {
+    const pedidoItensDiv = document.getElementById('pedidoItens');
+    pedidoItensDiv.innerHTML = '';
+
+    currentPedidoElement = pedidoElement;
+    const pedidoDetalhes = pedidoMap.get(pedidoNum);
+
+    pedidoDetalhes.forEach(detalhe => {
+        const [modelo, cor] = detalhe;
+
         const container = document.createElement('div');
         container.className = 'container';
 
-        const modelo = document.createElement('h3');
-        modelo.textContent = `Modelo: ${detalhe.modelo}`;
-        modelo.className = 'modelo';
-        container.appendChild(modelo);
+        const modeloDiv = document.createElement('div');
+        modeloDiv.className = 'modelo';
+        modeloDiv.textContent = 'Modelo: ' + modelo;
 
-        const cor = document.createElement('p');
-        cor.textContent = `Cor: ${detalhe.cor}`;
-        cor.className = 'cor';
-        container.appendChild(cor);
+        const corDiv = document.createElement('div');
+        corDiv.className = 'cor';
+        corDiv.textContent = 'Cor: ' + cor;
 
+        container.appendChild(modeloDiv);
+        container.appendChild(corDiv);
         pedidoItensDiv.appendChild(container);
     });
 
-    // Mostrar o popup e o overlay
-    popup.style.display = 'block';
-    overlay.style.display = 'block';
+    document.getElementById('popup').style.display = 'block';
+}
 
-    // Fechar o popup ao clicar no "X" ou no overlay
-    document.querySelector('#popup .close').addEventListener('click', () => {
-        popup.style.display = 'none';
-        overlay.style.display = 'none';
-    });
+function closePopup() {
+    document.getElementById('popup').style.display = 'none';
+}
 
-    overlay.addEventListener('click', () => {
-        popup.style.display = 'none';
-        overlay.style.display = 'none';
-    });
+function verificarFicha() {
+    const fichaInput = document.getElementById('fichaInput');
+    const fichaValor = fichaInput.value;
+    const [ano, numeroFicha] = fichaValor.split('-');
 
-    // Verificar a ficha ao clicar no botão
-    document.getElementById('verificar-ficha').addEventListener('click', verificarFicha);
+    const pedidoItensDiv = document.getElementById('pedidoItens');
+    const pedidoDetalhes = Array.from(pedidoMap.values()).flat();
 
-    // Função para verificar a ficha inserida
-    function verificarFicha() {
-        const ficha = fichaInput.value.trim();
-        const [ano, numeroFicha] = ficha.split('-');
+    let encontrado = false;
 
-        if (!ano || !numeroFicha) {
-            alert('Por favor, insira a ficha no formato correto: AK-AL');
-            return;
-        }
+    for (let i = 0; i < pedidoDetalhes.length; i++) {
+        const anoPlanilha = pedidoDetalhes[i][2];
+        const fichaPlanilha = pedidoDetalhes[i][3];
+        const modeloPlanilha = pedidoDetalhes[i][0];
+        const corPlanilha = pedidoDetalhes[i][1];
 
-        // Índices das colunas relevantes
-        const COL_ANO = 36;  // Coluna AK - Ano
-        const COL_FICHA = 37; // Coluna AL - Ficha
-        const COL_MODELO = 27; // Coluna AB - Modelo
-        const COL_COR = 28;    // Coluna AC - Cor
+        if (anoPlanilha == ano && fichaPlanilha == numeroFicha) {
+            encontrado = true;
 
-        let encontrado = false;
+            const containers = pedidoItensDiv.querySelectorAll('.container');
 
-        // Loop para comparar os dados da ficha com os modelos no popup
-        for (let i = 1; i < pedidoDetalhes.length; i++) {
-            const anoPlanilha = pedidoDetalhes[i][COL_ANO];
-            const fichaPlanilha = pedidoDetalhes[i][COL_FICHA];
-            const modeloPlanilha = pedidoDetalhes[i][COL_MODELO];
-            const corPlanilha = pedidoDetalhes[i][COL_COR];
+            containers.forEach(container => {
+                const modeloDiv = container.querySelector('.modelo');
+                const corDiv = container.querySelector('.cor');
+                
+                const modeloExibido = modeloDiv.textContent.replace('Modelo: ', '');
+                const corExibida = corDiv.textContent.replace('Cor: ', '');
 
-            if (anoPlanilha == ano && fichaPlanilha == numeroFicha) {
-                encontrado = true;
-
-                const containerElements = pedidoItensDiv.getElementsByClassName('container');
-
-                for (let container of containerElements) {
-                    const modeloElement = container.querySelector('.modelo');
-                    const corElement = container.querySelector('.cor');
-
-                    if (modeloElement.textContent.includes(modeloPlanilha) && corElement.textContent.includes(corPlanilha)) {
-                        modeloElement.classList.add('riscado');
-                        corElement.classList.add('riscado');
-
-                        // Marcar o item como riscado e continuar a verificar
-                        break;
-                    }
+                if (modeloExibido == modeloPlanilha && corExibida == corPlanilha) {
+                    modeloDiv.classList.add('riscado');
+                    corDiv.classList.add('riscado');
                 }
+            });
 
-                // Apagar o valor da ficha e sair da função
-                fichaInput.value = '';
-                return;
-            }
+            verificarConclusao();
+            break;
         }
+    }
 
-        if (!encontrado) {
-            alert('Ficha não encontrada. Verifique o número e tente novamente.');
+    if (!encontrado) {
+        alert('Ficha não encontrada ou não corresponde a nenhum modelo.');
+    }
+
+    fichaInput.value = ''; // Limpa o campo de ficha após a verificação
+}
+
+function verificarConclusao() {
+    const containerElements = document.querySelectorAll('#pedidoItens .container');
+
+    let todasRiscadas = true;
+
+    containerElements.forEach(container => {
+        const modeloDiv = container.querySelector('.modelo');
+        const corDiv = container.querySelector('.cor');
+
+        if (!modeloDiv.classList.contains('riscado') || !corDiv.classList.contains('riscado')) {
+            todasRiscadas = false;
         }
+    });
 
-        // Apagar o valor da ficha para permitir uma nova verificação
-        fichaInput.value = '';
+    if (todasRiscadas) {
+        currentPedidoElement.classList.add('pedido-verde');
+        currentPedidoElement.classList.remove('pedido-vermelho');
+        closePopup(); // Fecha o popup se todos os modelos foram riscados
+    } else {
+        currentPedidoElement.classList.add('pedido-vermelho');
+        currentPedidoElement.classList.remove('pedido-verde');
     }
 }
