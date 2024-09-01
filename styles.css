@@ -140,3 +140,55 @@ h1 {
     text-decoration: line-through;
     color: #999;
 }
+
+/* Media Queries */
+
+/* Telas pequenas (ex: celulares em modo retrato) */
+@media (max-width: 600px) {
+    #fileInput {
+        max-width: 100%; /* Ajusta a largura do input para telas menores */
+    }
+
+    .popup {
+        width: 90%; /* Aumenta a largura do popup em telas menores */
+        padding: 10px; /* Reduz o padding em telas menores */
+    }
+
+    .pedido-item {
+        padding: 8px; /* Reduz o padding dos itens do pedido */
+    }
+
+    h1 {
+        font-size: 24px; /* Ajusta o tamanho da fonte do título */
+    }
+}
+
+/* Telas médias (ex: tablets) */
+@media (min-width: 601px) and (max-width: 1024px) {
+    #fileInput {
+        max-width: 70%; /* Ajusta a largura do input para tablets */
+    }
+
+    .popup {
+        width: 85%; /* Ajusta a largura do popup em tablets */
+    }
+
+    h1 {
+        font-size: 28px; /* Ajusta o tamanho da fonte do título */
+    }
+}
+
+/* Telas grandes (ex: notebooks, desktops) */
+@media (min-width: 1025px) {
+    #fileInput {
+        max-width: 50%; /* Ajusta a largura do input para telas grandes */
+    }
+
+    .popup {
+        width: 70%; /* Ajusta a largura do popup para telas grandes */
+    }
+
+    h1 {
+        font-size: 32px; /* Ajusta o tamanho da fonte do título */
+    }
+}
